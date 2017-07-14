@@ -1,6 +1,7 @@
 package com.example.android.firebase;
 
 import android.location.Location;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,10 +14,14 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,LocationListener {
 
@@ -62,8 +67,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
 
         );
+
+        latLng = (TextView) findViewById(R.id.latLng);
+        permissions.add(ACCESS_FINE_LOCATION);
+        permissions.add(ACCESS_COARSE_LOCATION);
+
+        permissionsToRequest = findUnAskedPermissions(permissions);
+        //Basically get the permissions we have asked for before but are not granted..
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+
+            if (permissionsToRequest.size() > 0)
+                requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+        }
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
     }
 
+    private ArrayList findUnAskedPermissions(ArrayList wanted){
+        ArrayList result = new ArrayList();
+        for(String perm : wanted){
+            if(!hasPermission(perm)){
+                result.add(perm);
+            }
+        }
+        return result;
+    }
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 

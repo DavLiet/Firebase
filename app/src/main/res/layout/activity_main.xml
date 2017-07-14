@@ -13,4 +13,12 @@
         android:text="Click to change"
         tools:layout_editor_absoluteX="137dp"
         tools:layout_editor_absoluteY="214dp" />
+
+    <TextView
+        android:id="@+id/latLng"
+        android:layout_width="104dp"
+        android:layout_height="28dp"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="164dp"
+        tools:layout_editor_absoluteY="304dp" />
 </android.support.constraint.ConstraintLayout>
